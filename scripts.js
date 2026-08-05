@@ -85,18 +85,14 @@ const CONTACT_ICONS = {
 
 // State
 let data = loadData();
-let editMode = false;
 
 async function loadData() {
-
     const savedVersion = localStorage.getItem("app_version");
-
     if (!savedVersion) {
         localStorage.setItem("app_version", APP_VERSION);
     }
 
     const stored = localStorage.getItem(STORAGE_KEY);
-
     if (stored) {
         try {
             return JSON.parse(stored);
@@ -108,11 +104,9 @@ async function loadData() {
 
     try {
         const response = await fetch("./data.json");
-
         if (response.ok) {
             return await response.json();
         }
-
     } catch (error) {
         console.error("Could not load data.json:", error);
     }
@@ -191,10 +185,10 @@ function renderProfile() {
 
     const statsEl = document.getElementById("aboutStats");
     statsEl.innerHTML = "";
-    p.stats.forEach((s, i) => {
+    p.stats.forEach((s) => {
         const card = document.createElement("div");
         card.className = "stat-card";
-        card.innerHTML = `<div class="stat-num" data-stat-num="${i}">${s.num}</div><div class="stat-label" data-stat-label="${i}">${s.label}</div>`;
+        card.innerHTML = `<div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div>`;
         statsEl.appendChild(card);
     });
 }
@@ -203,7 +197,7 @@ function renderEducation() {
     const list = document.getElementById("educationList");
     list.innerHTML = "";
     if (data.education.length === 0) {
-        list.innerHTML = '<div class="empty-state">No education entries yet. Click "+ Add Education".</div>';
+        list.innerHTML = '<div class="empty-state">No education entries yet.</div>';
         return;
     }
     data.education.forEach((edu, i) => {
@@ -214,16 +208,13 @@ function renderEducation() {
         item.innerHTML = `
             <div class="edu-marker">${markerLabel}</div>
             <div class="edu-header">
-                <span class="edu-period" data-field="education.period" data-index="${i}">${escapeHtml(edu.period)}</span>
+                <span class="edu-period">${escapeHtml(edu.period)}</span>
                 <span class="edu-level-badge ${level}">${level}</span>
             </div>
-            <div class="edu-degree" data-field="education.degree" data-index="${i}">${escapeHtml(edu.degree)}</div>
-            <div class="edu-school" data-field="education.school" data-index="${i}">${escapeHtml(edu.school)}</div>
-            <div class="edu-desc" data-field="education.desc" data-index="${i}">${escapeHtml(edu.desc)}</div>
-            <div class="edu-actions">
-                <button class="delete-btn" onclick="deleteEducation(${i})">✕ Delete</button>
-                <button class="edit-btn" onclick="editEducation(${i})" style="font-size:0.72rem;padding:4px 10px;">Edit</button>
-            </div>`;
+            <div class="edu-degree">${escapeHtml(edu.degree)}</div>
+            <div class="edu-school">${escapeHtml(edu.school)}</div>
+            <div class="edu-desc">${escapeHtml(edu.desc)}</div>
+        `;
         list.appendChild(item);
     });
 }
@@ -239,7 +230,7 @@ function renderProjects() {
     const list = document.getElementById("projectsList");
     list.innerHTML = "";
     if (data.projects.length === 0) {
-        list.innerHTML = '<div class="empty-state">No projects yet. Click "+ Add Project".</div>';
+        list.innerHTML = '<div class="empty-state">No projects yet.</div>';
         return;
     }
     data.projects.forEach((proj, i) => {
@@ -261,15 +252,11 @@ function renderProjects() {
                 <span class="project-status">active</span>
             </div>
             <div class="project-body">
-                <div class="project-icon" data-field="project.icon" data-index="${i}">${escapeHtml(proj.icon)}</div>
-                <div class="project-title" data-field="project.title" data-index="${i}">${escapeHtml(proj.title)}</div>
-                <div class="project-desc" data-field="project.desc" data-index="${i}">${escapeHtml(proj.desc)}</div>
+                <div class="project-icon">${escapeHtml(proj.icon)}</div>
+                <div class="project-title">${escapeHtml(proj.title)}</div>
+                <div class="project-desc">${escapeHtml(proj.desc)}</div>
                 <div class="project-tags">${tagsHtml}</div>
                 <div class="project-links">${linkHtml}</div>
-                <div class="project-actions">
-                    <button class="delete-btn" onclick="deleteProject(${i})">✕ Delete</button>
-                    <button class="edit-btn" onclick="editProject(${i})" style="font-size:0.72rem;padding:4px 10px;">Edit</button>
-                </div>
             </div>`;
         list.appendChild(card);
     });
@@ -279,7 +266,7 @@ function renderSkills() {
     const wrap = document.getElementById("skillsList");
     wrap.innerHTML = "";
     if (data.skills.length === 0) {
-        wrap.innerHTML = '<div class="empty-state">No skills yet. Click "+ Add Skill".</div>';
+        wrap.innerHTML = '<div class="empty-state">No skills yet.</div>';
         return;
     }
     const inner = document.createElement("div");
@@ -298,9 +285,8 @@ function renderSkills() {
         chip.className = "skill-chip";
         chip.innerHTML = `
             <span class="skill-dot"></span>
-            <span data-field="skill" data-index="${i}">${escapeHtml(s)}</span>
+            <span>${escapeHtml(s)}</span>
             <span class="skill-num">0x${(i + 1).toString(16).padStart(2, "0")}</span>
-            <button class="delete-btn delete-btn-sm" onclick="deleteSkill(${i})">✕</button>
         `;
         grid.appendChild(chip);
     });
@@ -328,10 +314,7 @@ function renderContacts() {
             </div>
             ${linkEl}
             <button class="contact-copy" onclick="copyContact(${i})" title="Copy">${copyIcon}</button>
-            <div class="contact-actions">
-                <button class="delete-btn delete-btn-sm" onclick="deleteContact(${i})">✕</button>
-                <button class="edit-btn" onclick="editContact(${i})" style="font-size:0.72rem;padding:4px 10px;">Edit</button>
-            </div>`;
+        `;
         list.appendChild(card);
     });
 }
@@ -354,258 +337,7 @@ function renderAll() {
     renderProjects();
     renderSkills();
     renderContacts();
-    applyEditMode();
 }
-
-// Edit mode
-function applyEditMode() {
-    document.body.classList.toggle("edit-mode", editMode);
-    const toggle = document.getElementById("editToggle");
-    toggle.classList.toggle("active", editMode);
-    toggle.querySelector("span").textContent = editMode ? "Done" : "Edit";
-
-    if (editMode) {
-        makeEditable("heroName", "profile.name");
-        makeEditable("heroRole", "profile.role");
-        makeEditable("heroTagline", "profile.tagline");
-        makeEditable("heroStatus", "profile.status");
-        makeEditable("aboutText", "profile.about");
-    } else {
-        document.querySelectorAll("[contenteditable]").forEach((el) => {
-            el.removeAttribute("contenteditable");
-            el.removeAttribute("data-editing");
-        });
-    }
-}
-
-function makeEditable(id, fieldPath) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.setAttribute("contenteditable", "true");
-    el.setAttribute("data-editing", fieldPath);
-}
-
-function setByPath(obj, path, value) {
-    const parts = path.split(".");
-    let o = obj;
-    for (let i = 0; i < parts.length - 1; i++) o = o[parts[i]];
-    o[parts[parts.length - 1]] = value;
-}
-
-// Handle inline edits
-document.addEventListener("blur", (e) => {
-    const el = e.target;
-    if (el.hasAttribute && el.hasAttribute("data-editing")) {
-        const path = el.getAttribute("data-editing");
-        setByPath(data, path, el.textContent.trim());
-        saveData();
-    }
-}, true);
-
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && e.target.hasAttribute && e.target.hasAttribute("data-editing") && e.target.id !== "aboutText") {
-        e.preventDefault();
-        e.target.blur();
-    }
-});
-
-// Modal
-const modalOverlay = document.getElementById("modalOverlay");
-const modalForm = document.getElementById("modalForm");
-const modalTitle = document.getElementById("modalTitle");
-let currentModalContext = null;
-
-function openModal(title, fields, onSave) {
-    modalTitle.textContent = title;
-    modalForm.innerHTML = "";
-    fields.forEach((f) => {
-        const wrap = document.createElement("div");
-        wrap.className = "field";
-        const label = document.createElement("label");
-        label.textContent = f.label;
-        const input = f.type === "textarea" ? document.createElement("textarea") : document.createElement("input");
-        if (f.type !== "textarea") input.type = f.type || "text";
-        input.value = f.value || "";
-        input.name = f.name;
-        if (f.placeholder) input.placeholder = f.placeholder;
-        wrap.appendChild(label);
-        wrap.appendChild(input);
-        modalForm.appendChild(wrap);
-    });
-    const actions = document.createElement("div");
-    actions.className = "modal-actions";
-    actions.innerHTML = '<button type="button" class="btn btn-cancel">Cancel</button><button type="submit" class="btn btn-save">Save</button>';
-    modalForm.appendChild(actions);
-
-    currentModalContext = onSave;
-    modalOverlay.classList.add("open");
-}
-
-function closeModal() {
-    modalOverlay.classList.remove("open");
-    currentModalContext = null;
-}
-
-modalForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    if (currentModalContext) {
-        const formData = {};
-        new FormData(modalForm).forEach((v, k) => (formData[k] = v));
-        currentModalContext(formData);
-    }
-    closeModal();
-});
-
-document.getElementById("modalClose").addEventListener("click", closeModal);
-modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) closeModal();
-});
-
-// Education CRUD
-window.editEducation = function (i) {
-    const edu = data.education[i];
-    openModal(
-        "Edit Education",
-        [
-            { name: "period", label: "Period", value: edu.period },
-            { name: "degree", label: "Degree / Qualification", value: edu.degree },
-            { name: "school", label: "School / College / University", value: edu.school },
-            { name: "desc", label: "Description", value: edu.desc, type: "textarea" },
-        ],
-        (f) => {
-            data.education[i] = { period: f.period, degree: f.degree, school: f.school, desc: f.desc };
-            saveData();
-            renderEducation();
-        }
-    );
-};
-
-window.deleteEducation = function (i) {
-    if (confirm(`Remove this education entry?`)) {
-        data.education.splice(i, 1);
-        saveData();
-        renderEducation();
-    }
-};
-
-// Project CRUD
-window.editProject = function (i) {
-    const proj = data.projects[i] || { icon: "bi", title: "", desc: "", tags: [], link: "", linkLabel: "View" };
-    openModal(
-        i >= 0 ? "Edit Project" : "Add Project",
-        [
-            { name: "title", label: "Project Title", value: proj.title },
-            { name: "icon", label: "Icon (short text, e.g. 'bi', 'asm', 'net')", value: proj.icon },
-            { name: "desc", label: "Description", value: proj.desc, type: "textarea" },
-            { name: "tags", label: "Tags (comma separated)", value: (proj.tags || []).join(", ") },
-            { name: "link", label: "Project Link (URL)", value: proj.link },
-            { name: "linkLabel", label: "Link Label", value: proj.linkLabel || "View" },
-        ],
-        (f) => {
-            const project = {
-                icon: f.icon || "bi",
-                title: f.title,
-                desc: f.desc,
-                tags: f.tags.split(",").map((t) => t.trim()).filter(Boolean),
-                link: f.link,
-                linkLabel: f.linkLabel || "View",
-            };
-            if (i >= 0) data.projects[i] = project;
-            else data.projects.push(project);
-            saveData();
-            renderProjects();
-        }
-    );
-};
-
-window.deleteProject = function (i) {
-    if (confirm(`Remove "${data.projects[i].title}" from your projects?`)) {
-        data.projects.splice(i, 1);
-        saveData();
-        renderProjects();
-    }
-};
-
-// Skill delete
-window.deleteSkill = function (i) {
-    if (confirm(`Remove "${data.skills[i]}" from your skills?`)) {
-        data.skills.splice(i, 1);
-        saveData();
-        renderSkills();
-    }
-};
-
-// Contact CRUD
-window.editContact = function (i) {
-    const c = data.contacts[i] || { type: "link", label: "", value: "", link: "" };
-    openModal(
-        i >= 0 ? "Edit Contact" : "Add Contact",
-        [
-            { name: "label", label: "Label (e.g. Email, Phone, GitHub)", value: c.label },
-            { name: "type", label: "Type", value: c.type },
-            { name: "value", label: "Value (shown text)", value: c.value },
-            { name: "link", label: "Link (URL, mailto:, or tel:)", value: c.link },
-        ],
-        (f) => {
-            const contact = { type: f.type, label: f.label, value: f.value, link: f.link };
-            if (i >= 0) data.contacts[i] = contact;
-            else data.contacts.push(contact);
-            saveData();
-            renderContacts();
-        }
-    );
-};
-
-window.deleteContact = function (i) {
-    if (confirm(`Remove this contact?`)) {
-        data.contacts.splice(i, 1);
-        saveData();
-        renderContacts();
-    }
-};
-
-// Add buttons
-document.querySelectorAll("[data-add]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-        const type = btn.getAttribute("data-add");
-        if (type === "education") {
-            openModal(
-                "Add Education",
-                [
-                    { name: "period", label: "Period", value: "" },
-                    { name: "degree", label: "Degree / Qualification", value: "" },
-                    { name: "school", label: "School / College / University", value: "" },
-                    { name: "desc", label: "Description", value: "", type: "textarea" },
-                ],
-                (f) => {
-                    data.education.push({ period: f.period, degree: f.degree, school: f.school, desc: f.desc });
-                    saveData();
-                    renderEducation();
-                }
-            );
-        } else if (type === "project") {
-            editProject(-1);
-        } else if (type === "skill") {
-            openModal(
-                "Add Skill",
-                [{ name: "skill", label: "Skill Name", value: "" }],
-                (f) => {
-                    if (f.skill.trim()) {
-                        data.skills.push(f.skill.trim());
-                        saveData();
-                        renderSkills();
-                    }
-                }
-            );
-        }
-    });
-});
-
-// Edit toggle
-document.getElementById("editToggle").addEventListener("click", () => {
-    editMode = !editMode;
-    applyEditMode();
-});
 
 // Nav scroll effect
 window.addEventListener("scroll", () => {
@@ -636,11 +368,8 @@ function escapeAttr(str) {
 
 // Init
 async function init() {
-
     data = await loadData();
-
     renderAll();
-
 }
 
 init();
