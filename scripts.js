@@ -17,21 +17,21 @@ const DEFAULT_DATA = {
     },
     education: [
         {
-            period: "2021 - 2025",
-            degree: "B.Tech in Computer Science & Engineering",
-            school: "Your University",
+            period: "2023 - 2027",
+            degree: "Bachelor in Computer Science & Engineering",
+            school: "International University of Bussiness Agriculture and Technology",
             desc: "Focus on cybersecurity, operating systems, and networks. Active member of the cybersecurity club.",
         },
         {
             period: "2019 - 2021",
             degree: "Higher Secondary (Science)",
-            school: "Your College",
+            school: "Shaheed Bir Bikram Ramiz Uddin Cantoonment College",
             desc: "Computer Science, Mathematics, and Physics.",
         },
         {
             period: "2017 - 2019",
-            degree: "Secondary School",
-            school: "Your School",
+            degree: "Secondary School (Science)",
+            school: "Nabarun Public School",
             desc: "Foundation in computers and programming.",
         },
     ],
