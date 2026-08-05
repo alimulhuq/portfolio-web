@@ -84,7 +84,7 @@ const CONTACT_ICONS = {
 };
 
 // State
-let data = loadData();
+let data = null;
 
 async function loadData() {
     const savedVersion = localStorage.getItem("app_version");
