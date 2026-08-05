@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Malware Analyst Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <!-- Nav -->
+    <header class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#hero" class="nav-logo">
+                <span class="nav-logo-mark">&lt;/&gt;</span>
+                <span class="nav-logo-text" id="navName">Portfolio</span>
+            </a>
+            <nav class="nav-links" id="navLinks">
+                <a href="#about">About</a>
+                <a href="#education">Education</a>
+                <a href="#projects">Projects</a>
+                <a href="#skills">Skills</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <button class="nav-edit" id="editToggle" title="Edit your portfolio">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                <span>Edit</span>
+            </button>
+            <button class="nav-burger" id="navBurger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-inner">
+            <div class="hero-photo-wrap">
+                <div class="hero-photo-ring"></div>
+                <div class="hero-photo" id="heroPhoto">
+                    <span class="hero-photo-placeholder" id="heroPhotoPlaceholder">YA</span>
+                </div>
+                <div class="hero-photo-status"></div>
+                <button class="hero-photo-upload" id="heroPhotoUpload" title="Upload your photo">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </button>
+                <input type="file" id="heroPhotoInput" accept="image/*" hidden />
+            </div>
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span id="heroStatus">Available for opportunities</span>
+            </div>
+            <h1 class="hero-name" id="heroName">Your Name</h1>
+            <p class="hero-role" id="heroRole">Malware Analyst</p>
+            <p class="hero-tagline" id="heroTagline">Dissecting malicious code to understand threats and defend systems.</p>
+            <div class="hero-actions">
+                <a href="#projects" class="btn btn-primary">View Projects</a>
+                <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+            </div>
+            <div class="hero-scroll">
+                <span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+        <div class="section-head">
+            <h2 class="section-title">About Me</h2>
+        </div>
+        <div class="about-grid">
+            <div class="about-text" id="aboutText" data-field="about"></div>
+            <div class="about-stats" id="aboutStats"></div>
+        </div>
+    </section>
+
+    <!-- Education -->
+    <section class="section" id="education">
+        <div class="section-head">
+            <h2 class="section-title">Educational Background</h2>
+            <button class="btn-add-always" data-add="education">+ Add Education</button>
+        </div>
+        <div class="timeline" id="educationList"></div>
+    </section>
+
+    <!-- Projects -->
+    <section class="section" id="projects">
+        <div class="section-head">
+            <h2 class="section-title">Projects</h2>
+            <button class="btn-add-always" data-add="project">+ Add Project</button>
+        </div>
+        <div class="projects-grid" id="projectsList"></div>
+    </section>
+
+    <!-- Skills -->
+    <section class="section" id="skills">
+        <div class="section-head">
+            <h2 class="section-title">Skills & Tools</h2>
+            <button class="btn-add-always" data-add="skill">+ Add Skill</button>
+        </div>
+        <div id="skillsList"></div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section" id="contact">
+        <div class="section-head">
+            <h2 class="section-title">Get in Touch</h2>
+        </div>
+        <div class="contact-grid" id="contactList"></div>
+    </section>
+
+    <footer class="footer">
+        <p>Built with passion by <span id="footerName">Your Name</span> &middot; <span id="footerYear"></span></p>
+    </footer>
+
+    <!-- Modal for editing -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <div class="modal-head">
+                <h3 class="modal-title" id="modalTitle">Edit</h3>
+                <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+            </div>
+            <form class="modal-body" id="modalForm"></form>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
