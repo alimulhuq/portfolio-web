@@ -1,5 +1,5 @@
 // Portfolio data manager with localStorage persistence
-
+const APP_VERSION = "1.0.0";
 const STORAGE_KEY = "malware_portfolio_data";
 
 const DEFAULT_DATA = {
@@ -88,12 +88,19 @@ let data = loadData();
 let editMode = false;
 
 function loadData() {
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) return JSON.parse(stored);
-    } catch (e) {
-        // ignore
+    const savedVersion = localStorage.getItem("app_version");
+
+    if (savedVersion !== APP_VERSION) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem("app_version", APP_VERSION);
     }
+
+    const stored = localStorage.getItem(STORAGE_KEY);
+
+    if (stored) {
+        return JSON.parse(stored);
+    }
+
     return JSON.parse(JSON.stringify(DEFAULT_DATA));
 }
 
