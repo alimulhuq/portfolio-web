@@ -1,0 +1,24 @@
+{
+  "profile": {
+    "name": "Alimul Huq",
+    "role": "Malware Analyst",
+    "tagline": "Dissecting malicious code to understand threats and defend systems.",
+    "status": "Available for opportunities",
+    "about": "Computer Science student passionate about cybersecurity and malware analysis.",
+    "stats": [
+      {
+        "num": "3+",
+        "label": "Years in Cybersecurity"
+      },
+      {
+        "num": "20+",
+        "label": "Malware Samples Analyzed"
+      }
+    ]
+  },
+
+  "education": [],
+  "projects": [],
+  "skills": [],
+  "contacts": []
+}

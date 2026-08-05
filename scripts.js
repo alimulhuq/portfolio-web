@@ -87,21 +87,37 @@ const CONTACT_ICONS = {
 let data = loadData();
 let editMode = false;
 
-function loadData() {
+async function loadData() {
+
     const savedVersion = localStorage.getItem("app_version");
 
-    if (savedVersion !== APP_VERSION) {
-        localStorage.removeItem(STORAGE_KEY);
+    if (!savedVersion) {
         localStorage.setItem("app_version", APP_VERSION);
     }
 
     const stored = localStorage.getItem(STORAGE_KEY);
 
     if (stored) {
-        return JSON.parse(stored);
+        try {
+            return JSON.parse(stored);
+        } catch (error) {
+            console.error("Invalid localStorage data:", error);
+            localStorage.removeItem(STORAGE_KEY);
+        }
     }
 
-    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    try {
+        const response = await fetch("./data.json");
+
+        if (response.ok) {
+            return await response.json();
+        }
+
+    } catch (error) {
+        console.error("Could not load data.json:", error);
+    }
+
+    return structuredClone(DEFAULT_DATA);
 }
 
 function saveData() {
@@ -619,4 +635,12 @@ function escapeAttr(str) {
 }
 
 // Init
-renderAll();
+async function init() {
+
+    data = await loadData();
+
+    renderAll();
+
+}
+
+init();
