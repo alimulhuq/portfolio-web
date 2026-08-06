@@ -2,6 +2,7 @@
 const APP_VERSION = "1.0.0";
 const STORAGE_KEY = "malware_portfolio_data";
 
+// Default data fallback (used only if no embedded data and no localStorage)
 const DEFAULT_DATA = {
     profile: {
         name: "Your Name",
@@ -86,53 +87,58 @@ const CONTACT_ICONS = {
 // State
 let data = null;
 
-// Safe clone function for older browsers
+// Safe clone
 function cloneDeep(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
-async function loadData() {
-    // If opened directly from file://, skip the fetch to avoid CORS
-    if (window.location.protocol === 'file:') {
-        console.log('Running from file:// – using default data');
-        // Still try localStorage first
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            try {
-                return JSON.parse(stored);
-            } catch (e) {
-                console.warn('Invalid localStorage data, ignoring');
-            }
-        }
-        return cloneDeep(DEFAULT_DATA);
+function loadData() {
+    // 1. Use embedded data if available (from window.EMBEDDED_DATA)
+    let sourceData = null;
+    if (typeof window !== 'undefined' && window.EMBEDDED_DATA) {
+        sourceData = cloneDeep(window.EMBEDDED_DATA);
     }
 
-    // Normal HTTP(S) flow
-    const savedVersion = localStorage.getItem("app_version");
-    if (!savedVersion) {
-        localStorage.setItem("app_version", APP_VERSION);
-    }
-
+    // 2. Check localStorage for user changes (overrides embedded)
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
         try {
-            return JSON.parse(stored);
-        } catch (error) {
-            console.error("Invalid localStorage data:", error);
-            localStorage.removeItem(STORAGE_KEY);
+            const parsed = JSON.parse(stored);
+            // Merge with source (prefer stored values)
+            if (sourceData) {
+                // Deep merge: stored overrides source
+                data = mergeDeep(sourceData, parsed);
+            } else {
+                data = parsed;
+            }
+            return data;
+        } catch (e) {
+            console.warn('Invalid localStorage data, ignoring');
         }
     }
 
-    try {
-        const response = await fetch(`./data.json?t=${Date.now()}`);
-        if (response.ok) {
-            return await response.json();
-        }
-    } catch (error) {
-        console.error("Could not load data.json:", error);
+    // 3. Fallback to embedded or default
+    if (sourceData) {
+        data = sourceData;
+    } else {
+        data = cloneDeep(DEFAULT_DATA);
     }
+    return data;
+}
 
-    return cloneDeep(DEFAULT_DATA);
+// Simple deep merge (objects only)
+function mergeDeep(target, source) {
+    const output = cloneDeep(target);
+    for (const key in source) {
+        if (source.hasOwnProperty(key)) {
+            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                output[key] = mergeDeep(output[key] || {}, source[key]);
+            } else {
+                output[key] = source[key];
+            }
+        }
+    }
+    return output;
 }
 
 function saveData() {
@@ -405,8 +411,8 @@ if (burger && navLinks) {
 }
 
 // Init
-async function init() {
-    data = await loadData();
+function init() {
+    data = loadData();
     renderAll();
 }
 
