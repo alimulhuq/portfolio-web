@@ -1,10 +1,10 @@
 {
   "profile": {
-    "name": "Your Name",
+    "name": "Alimul Huq",
     "role": "Malware Analyst",
     "tagline": "Dissecting malicious code to understand threats and defend systems.",
     "status": "Available for opportunities",
-    "about": "I am a Computer Science & Engineering student passionate about cybersecurity and malware analysis. I specialize in reverse engineering, static and dynamic analysis of malicious samples, and understanding attack techniques to build better defenses.\n\nMy journey began with a curiosity about how software works at the lowest level, which led me into the world of threat research, binary analysis, and incident response.",
+    "about": "Computer Science student passionate about cybersecurity and malware analysis.",
     "stats": [
       { "num": "3+", "label": "Years in Cybersecurity" },
       { "num": "20+", "label": "Malware Samples Analyzed" },
@@ -15,13 +15,13 @@
     {
       "period": "2023 - 2027",
       "degree": "Bachelor in Computer Science & Engineering",
-      "school": "International University of Bussiness Agriculture and Technology",
+      "school": "International University of Business Agriculture and Technology",
       "desc": "Focus on cybersecurity, operating systems, and networks. Active member of the cybersecurity club."
     },
     {
       "period": "2019 - 2021",
       "degree": "Higher Secondary (Science)",
-      "school": "Shaheed Bir Bikram Ramiz Uddin Cantoonment College",
+      "school": "Shaheed Bir Bikram Ramiz Uddin Cantonment College",
       "desc": "Computer Science, Mathematics, and Physics."
     },
     {
