@@ -1,24 +1,90 @@
 {
   "profile": {
-    "name": "Alimul Huq",
+    "name": "Md. Alimul Huq",
     "role": "Malware Analyst",
     "tagline": "Dissecting malicious code to understand threats and defend systems.",
     "status": "Available for opportunities",
-    "about": "Computer Science student passionate about cybersecurity and malware analysis.",
+    "about": "I am a Computer Science & Engineering student passionate about cybersecurity and malware analysis. I specialize in reverse engineering, static and dynamic analysis of malicious samples, and understanding attack techniques to build better defenses.\n\nMy journey began with a curiosity about how software works at the lowest level, which led me into the world of threat research, binary analysis, and incident response.",
     "stats": [
-      {
-        "num": "3+",
-        "label": "Years in Cybersecurity"
-      },
-      {
-        "num": "20+",
-        "label": "Malware Samples Analyzed"
-      }
+      { "num": "3+", "label": "Years in Cybersecurity" },
+      { "num": "20+", "label": "Malware Samples Analyzed" },
+      { "num": "10+", "label": "Projects Completed" }
     ]
   },
-
-  "education": [],
-  "projects": [],
-  "skills": [],
-  "contacts": []
+  "education": [
+    {
+      "period": "2023 - 2027",
+      "degree": "Bachelor in Computer Science & Engineering",
+      "school": "International University of Bussiness Agriculture and Technology",
+      "desc": "Focus on cybersecurity, operating systems, and networks. Active member of the cybersecurity club."
+    },
+    {
+      "period": "2019 - 2021",
+      "degree": "Higher Secondary (Science)",
+      "school": "Shaheed Bir Bikram Ramiz Uddin Cantoonment College",
+      "desc": "Computer Science, Mathematics, and Physics."
+    },
+    {
+      "period": "2017 - 2019",
+      "degree": "Secondary School (Science)",
+      "school": "Nabarun Public School",
+      "desc": "Foundation in computers and programming."
+    }
+  ],
+  "projects": [
+    {
+      "icon": "bi",
+      "title": "Malware Sandbox Analyzer",
+      "desc": "A lightweight sandbox environment for detonating suspicious files and capturing behavioral indicators including API calls, file system changes, and network activity.",
+      "tags": ["Python", "VirtualBox", "YARA"],
+      "link": "",
+      "linkLabel": "View Project"
+    },
+    {
+      "icon": "asm",
+      "title": "Reverse Engineering Toolkit",
+      "desc": "Collection of scripts for static analysis of PE files, extracting strings, imports, and entropy to identify packed or obfuscated malware.",
+      "tags": ["Ghidra", "IDA", "Python"],
+      "link": "",
+      "linkLabel": "View Project"
+    }
+  ],
+  "skills": [
+    "Reverse Engineering",
+    "Static & Dynamic Analysis",
+    "IDA Pro / Ghidra",
+    "YARA Rules",
+    "Python",
+    "Wireshark",
+    "Network Forensics",
+    "Linux / Bash",
+    "PE File Analysis",
+    "Threat Intelligence"
+  ],
+  "contacts": [
+    {
+      "type": "email",
+      "label": "Email",
+      "value": "alimulhuq3179@gmail.com",
+      "link": "mailto:alimulhuq3179@gmail.com"
+    },
+    {
+      "type": "phone",
+      "label": "Phone",
+      "value": "+88 018605 07009",
+      "link": "tel:+8801860507009"
+    },
+    {
+      "type": "github",
+      "label": "GitHub",
+      "value": "github.com/alimulhuq",
+      "link": "https://github.com/alimulhuq"
+    },
+    {
+      "type": "linkedin",
+      "label": "LinkedIn",
+      "value": "linkedin.com/in/Alimul razib",
+      "link": "https://www.linkedin.com/in/alimul-razib-b549a4277/"
+    }
+  ]
 }

@@ -86,7 +86,28 @@ const CONTACT_ICONS = {
 // State
 let data = null;
 
+// Safe clone function for older browsers
+function cloneDeep(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
 async function loadData() {
+    // If opened directly from file://, skip the fetch to avoid CORS
+    if (window.location.protocol === 'file:') {
+        console.log('Running from file:// – using default data');
+        // Still try localStorage first
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                console.warn('Invalid localStorage data, ignoring');
+            }
+        }
+        return cloneDeep(DEFAULT_DATA);
+    }
+
+    // Normal HTTP(S) flow
     const savedVersion = localStorage.getItem("app_version");
     if (!savedVersion) {
         localStorage.setItem("app_version", APP_VERSION);
@@ -111,7 +132,7 @@ async function loadData() {
         console.error("Could not load data.json:", error);
     }
 
-    return structuredClone(DEFAULT_DATA);
+    return cloneDeep(DEFAULT_DATA);
 }
 
 function saveData() {
@@ -122,6 +143,7 @@ function saveData() {
 function renderPhoto() {
     const photoEl = document.getElementById("heroPhoto");
     const placeholder = document.getElementById("heroPhotoPlaceholder");
+    if (!photoEl || !placeholder) return;
     const existingImg = photoEl.querySelector("img");
     if (data.profile.photo) {
         if (existingImg) {
@@ -146,55 +168,62 @@ function renderPhoto() {
     }
 }
 
-document.getElementById("heroPhotoUpload").addEventListener("click", () => {
-    document.getElementById("heroPhotoInput").click();
-});
-
-document.getElementById("heroPhotoInput").addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-        alert("Please choose an image smaller than 2MB.");
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-        data.profile.photo = ev.target.result;
-        saveData();
-        renderPhoto();
-    };
-    reader.readAsDataURL(file);
-});
+// Event listeners for photo upload
+const uploadBtn = document.getElementById("heroPhotoUpload");
+const uploadInput = document.getElementById("heroPhotoInput");
+if (uploadBtn && uploadInput) {
+    uploadBtn.addEventListener("click", () => uploadInput.click());
+    uploadInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+            alert("Please choose an image smaller than 2MB.");
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            data.profile.photo = ev.target.result;
+            saveData();
+            renderPhoto();
+        };
+        reader.readAsDataURL(file);
+    });
+}
 
 // Render functions
 function renderProfile() {
     const p = data.profile;
-    document.getElementById("navName").textContent = p.name;
-    document.getElementById("heroName").textContent = p.name;
-    document.getElementById("heroRole").textContent = p.role;
-    document.getElementById("heroTagline").textContent = p.tagline;
-    document.getElementById("heroStatus").textContent = p.status;
-    document.getElementById("footerName").textContent = p.name;
-    document.getElementById("footerYear").textContent = new Date().getFullYear();
+    setText("navName", p.name);
+    setText("heroName", p.name);
+    setText("heroRole", p.role);
+    setText("heroTagline", p.tagline);
+    setText("heroStatus", p.status);
+    setText("footerName", p.name);
+    setText("footerYear", new Date().getFullYear());
 
     renderPhoto();
 
     const aboutEl = document.getElementById("aboutText");
-    aboutEl.textContent = p.about;
-    aboutEl.setAttribute("data-field", "about");
+    if (aboutEl) {
+        aboutEl.textContent = p.about;
+        aboutEl.setAttribute("data-field", "about");
+    }
 
     const statsEl = document.getElementById("aboutStats");
-    statsEl.innerHTML = "";
-    p.stats.forEach((s) => {
-        const card = document.createElement("div");
-        card.className = "stat-card";
-        card.innerHTML = `<div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div>`;
-        statsEl.appendChild(card);
-    });
+    if (statsEl) {
+        statsEl.innerHTML = "";
+        p.stats.forEach((s) => {
+            const card = document.createElement("div");
+            card.className = "stat-card";
+            card.innerHTML = `<div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div>`;
+            statsEl.appendChild(card);
+        });
+    }
 }
 
 function renderEducation() {
     const list = document.getElementById("educationList");
+    if (!list) return;
     list.innerHTML = "";
     if (data.education.length === 0) {
         list.innerHTML = '<div class="empty-state">No education entries yet.</div>';
@@ -228,6 +257,7 @@ function detectEduLevel(text) {
 
 function renderProjects() {
     const list = document.getElementById("projectsList");
+    if (!list) return;
     list.innerHTML = "";
     if (data.projects.length === 0) {
         list.innerHTML = '<div class="empty-state">No projects yet.</div>';
@@ -264,6 +294,7 @@ function renderProjects() {
 
 function renderSkills() {
     const wrap = document.getElementById("skillsList");
+    if (!wrap) return;
     wrap.innerHTML = "";
     if (data.skills.length === 0) {
         wrap.innerHTML = '<div class="empty-state">No skills yet.</div>';
@@ -296,6 +327,7 @@ function renderSkills() {
 
 function renderContacts() {
     const list = document.getElementById("contactList");
+    if (!list) return;
     list.innerHTML = "";
     data.contacts.forEach((c, i) => {
         const card = document.createElement("div");
@@ -339,21 +371,11 @@ function renderAll() {
     renderContacts();
 }
 
-// Nav scroll effect
-window.addEventListener("scroll", () => {
-    document.getElementById("nav").classList.toggle("scrolled", window.scrollY > 30);
-});
-
-// Mobile burger
-document.getElementById("navBurger").addEventListener("click", () => {
-    document.getElementById("navLinks").classList.toggle("open");
-});
-
-document.querySelectorAll("#navLinks a").forEach((a) => {
-    a.addEventListener("click", () => {
-        document.getElementById("navLinks").classList.remove("open");
-    });
-});
+// Helper to set text content safely
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+}
 
 // Helpers
 function escapeHtml(str) {
@@ -364,6 +386,22 @@ function escapeHtml(str) {
 
 function escapeAttr(str) {
     return String(str == null ? "" : str).replace(/"/g, "&quot;");
+}
+
+// Nav scroll effect
+window.addEventListener("scroll", () => {
+    const nav = document.getElementById("nav");
+    if (nav) nav.classList.toggle("scrolled", window.scrollY > 30);
+});
+
+// Mobile burger
+const burger = document.getElementById("navBurger");
+const navLinks = document.getElementById("navLinks");
+if (burger && navLinks) {
+    burger.addEventListener("click", () => navLinks.classList.toggle("open"));
+    document.querySelectorAll("#navLinks a").forEach((a) => {
+        a.addEventListener("click", () => navLinks.classList.remove("open"));
+    });
 }
 
 // Init
