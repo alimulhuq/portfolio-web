@@ -528,10 +528,10 @@ body.edit-mode .hero-photo-upload {
 }
 
 /* ===== EDUCATION ===== */
-.timeline {
+/*.timeline {
     position: relative;
     padding-left: 36px;
-}
+}*/
 .timeline::before {
     content: "";
     position: absolute;
