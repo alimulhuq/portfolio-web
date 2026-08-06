@@ -124,7 +124,7 @@ async function loadData() {
     }
 
     try {
-        const response = await fetch("./data.json");
+        const response = await fetch(`./data.json?t=${Date.now()}`);
         if (response.ok) {
             return await response.json();
         }
